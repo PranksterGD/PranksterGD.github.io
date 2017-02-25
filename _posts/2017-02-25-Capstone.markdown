@@ -1,0 +1,32 @@
+---
+title: "Follow my capstone team!"
+layout: post
+date: 2017-02-25 15:32
+image:
+headerImage: false
+tag:
+- markdown
+- components
+- extra
+category: blog
+author: SiddharthSuresh
+description: Markdown summary with different options
+---
+
+## Summary:
+
+You can pick as item to see how to apply in markdown.
+---
+
+## Capstone
+
+Follow [Project Polish] (https://projectpolish.wordpress.com/)
+
+
+
+
+## Videos
+
+Watch our trailer!
+
+<iframe width="940" height="559" src="https://www.youtube.com/embed/mj0g4Abpfo8" frameborder="0" allowfullscreen></iframe>
