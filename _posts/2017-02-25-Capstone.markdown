@@ -20,7 +20,7 @@ You can pick as item to see how to apply in markdown.
 
 ## Capstone
 
-Follow [Project Polish] (https://projectpolish.wordpress.com/)
+Follow [Project Polish](https://projectpolish.wordpress.com/)
 
 
 
