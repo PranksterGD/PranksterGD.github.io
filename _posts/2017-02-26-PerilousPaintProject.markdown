@@ -1,5 +1,5 @@
 ---
-title: "RPP 1 Project - The Perilous Paint Project!"
+title: "RPP 1- The Perilous Paint Project!"
 layout: post
 date: 2017-02-25 10:00
 image:
@@ -14,6 +14,10 @@ description: The Perilous Paint Project!
 
 
 ## The Perilous Paint Project
+
+#### Development Time: 2 Weeks
+#### Engine: Adobe Animate (Flash)
+#### Role: UI/Gameplay Programmer
 
 RPP 1 had us make a game using Flash over a course of two weeks, with the sole goal being to make a fun game.
 

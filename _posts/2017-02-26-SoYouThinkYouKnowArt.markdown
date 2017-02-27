@@ -15,7 +15,13 @@ description: So You Think You Know Art?
 
 ## So You Think You Know Art?
 
-Text goes here.
+#### Development Time: 2 Weeks
+#### Engine: Unity
+#### Role: UI/Gameplay Programmer
+
+RPP 2 came with the constraint of making a game that went beyond entertainment, but removed the constraint of Flash as an Engine. The team decided to make a game to help teach art history, using Unity.
+
+My role on the team focused once again on a lot of UI programming, handling all of the player input, and managing the animation state machine.
  
 
 
