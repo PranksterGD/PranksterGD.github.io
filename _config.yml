@@ -40,7 +40,7 @@ twitter:
 # instagram: myinstagram
 # pinterest: mypinterest
 # linkedin: mylinkedin
-# youtube: myyoutube
+youtube: channel/UCknW1gYVHiOKPahFRxbg0pg
 # spotify: myspotify
 github: PranksterGD
 # stackoverflow: 7044681/mystackoverflow
@@ -84,10 +84,10 @@ blog: true
 read-time: true
 
 # do you want to show the "tags" inside the posts?
-show-tags: true
+show-tags: false
 
 # related posts inside a post?
-related: true
+related: false
 
 # Display links for next and previous posts for the specified categories
 post-advance-links: [blog]

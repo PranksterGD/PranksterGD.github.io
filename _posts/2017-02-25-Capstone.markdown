@@ -1,26 +1,21 @@
 ---
 title: "Follow my capstone team!"
 layout: post
-date: 2017-02-25 15:32
+date: 2017-02-25 14:00
 image:
 headerImage: false
-tag:
-- markdown
-- components
-- extra
+tag: Capstone
 category: blog
 author: SiddharthSuresh
-description: Markdown summary with different options
+description: Project Polish
 ---
 
-## Summary:
 
-You can pick as item to see how to apply in markdown.
----
+## Project Polish
 
-## Capstone
-
-Follow [Project Polish](https://projectpolish.wordpress.com/)
+Project Polish is making a 3d side scrolling adventure for our capstone game at FIEA-UCF. 
+Follow us [here](https://projectpolish.wordpress.com/) to see our progress!
+ 
 
 
 
@@ -29,4 +24,4 @@ Follow [Project Polish](https://projectpolish.wordpress.com/)
 
 Watch our trailer!
 
-<iframe width="940" height="559" src="https://www.youtube.com/embed/mj0g4Abpfo8" frameborder="0" allowfullscreen></iframe>
+<iframe width="640" height="480" src="https://www.youtube.com/embed/mj0g4Abpfo8" frameborder="0" allowfullscreen></iframe>
