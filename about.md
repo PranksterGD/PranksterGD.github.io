@@ -4,7 +4,7 @@ layout: page
 ---
 ![Profile Image]({{ site.url }}/{{ site.picture }})
 
-<p>Text goes here.</p>
+<p> Introduction Education</p>
 
 <p>.</p>
 
@@ -28,4 +28,5 @@ layout: page
 	<li><a href="https://github.com/PranksterGD/SoYouThinkYouKnowArt">So You Think You Know Art?</a></li>
 	<li><a href="https://github.com/PranksterGD/MorningAfter">The Morning After</a></li>
 	<li><a href="https://github.com/PranksterGD/SixDaysTillSummer">Six Days Till Summer</a></li>
+	<li><a href="https://github.com/PranksterGD/AirHockey">Air Hockey</a></li>
 </ul>
