@@ -1,5 +1,5 @@
 ---
-title: " RPP 2 Blog -So You Think YOu Know Art?"
+title: " RPP 2 Blog -So You Think You Know Art?"
 layout: post
 date: 2016-10-04 11:30
 image:
@@ -9,7 +9,7 @@ tag:
 - blog
 category: blog
 author: SiddharthSuresh
-description: The Perilous Paint Project!
+description: So You Think You Know Art?
 ---
 
 

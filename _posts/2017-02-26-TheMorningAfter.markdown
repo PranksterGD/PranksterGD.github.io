@@ -1,7 +1,7 @@
 ---
 title: "RPP 4 - The Morning After"
 layout: post
-date: 2017-02-25 12:00
+date: 2016-11-19 12:00
 image:
 headerImage: false
 tag: RPP
@@ -15,8 +15,15 @@ description: The Morning After
 
 ## The Morning After
 
-Text goes here.
- 
+#### Development Time: 2 Weeks
+#### Engine: Unity
+#### Role: Gameplay Programmer
+
+RPP 4 had us make a game with a focus on story. We chose to make a game that tells the story of the morning after a lovers' quarrel.
+
+My role shifted from a focus on UI, which I had had previously, to a stronger focus on actual gameplay. I spent most of the project ensuring that the first person controller and camera felt smooth to the player,
+and handling the interaction of different types of objects.
+
 
 ## Project Files
 
