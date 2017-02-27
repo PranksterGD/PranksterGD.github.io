@@ -22,6 +22,10 @@ Follow us [here](https://projectpolish.wordpress.com/) to see our progress!
 
 ## Videos
 
-Watch our trailer!
+### Watch our trailer!
 
 <iframe width="640" height="480" src="https://www.youtube.com/embed/mj0g4Abpfo8" frameborder="0" allowfullscreen></iframe>
+
+### Vertical slice Aesthetic Standard
+
+<iframe width="640" height="480" src="https://www.youtube.com/embed/gv8NyqrPPb8" frameborder="0" allowfullscreen></iframe>
