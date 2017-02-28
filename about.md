@@ -4,7 +4,10 @@ layout: page
 ---
 ![Profile Image]({{ site.url }}/{{ site.picture }})
 
-<p> Introduction Education</p>
+<p>I'm Siddharth Suresh, and I've been playing games for as long as I can rememeber. Some of my earliest memories of video games is playing on the Sega Genesis, when I was about 4 years old.
+Games have been a constant throughout my life growing up, and as I grew up and got into computers and programming, the next obvious step was for me to get into the field of game development. My undergrad in 
+Computer Science & Engineering from VIT- India set the foundation for me to apply for a master's program in Interactive Entertainment at FIEA-UCF, where I have spent the last 6 months crafting the skills I need to excel as a 
+programmer in the gaming field.</p>
 
 <p>.</p>
 
