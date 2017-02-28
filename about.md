@@ -9,7 +9,6 @@ Games have been a constant throughout my life growing up, and as I grew up and g
 Computer Science & Engineering from VIT- India set the foundation for me to apply for a master's program in Interactive Entertainment at FIEA-UCF, where I have spent the last 6 months crafting the skills I need to excel as a 
 programmer in the gaming field.</p>
 
-<p>.</p>
 
 <h2>Skills</h2>
 
