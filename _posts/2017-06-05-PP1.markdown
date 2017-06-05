@@ -1,0 +1,43 @@
+---
+title: "Polish Physics - Developer's Blog 1"
+layout: post
+date: 2017-05-31 12:30
+image:
+headerImage: false
+tag: 
+- PPP
+- blog
+category: blog
+author: SiddharthSuresh
+description: Polish Physics
+---
+
+
+## Polish Physics - A Developer's Blog 1
+
+
+Semester 3 of FIEA has us select a personal programming project to do a deep dive into a topic of our choosing. Working with Unity's and Unreal's physics engines as a part of RPP and capstone drove me to choose physics as my
+topic of study, and in particular, I will be building a 3D physics engine as part of my grade for the class.
+
+The last week went into researching how physics engines are built and the different kinds of engines our there.
+
+First off, the engine could be either in 2D or 3D. I chose to make a 3D engine as it gives me a chance to brush up on my 3D math skills, something that programmers end up using quite often to solve problems.
+
+Another distinction is how the engine treats bodies. They could either be treated as one singular mass, which is how objects beave in the real world, or they could be assembled as a collection of masses with the
+connections betweeen them being defined. For example, a cube could be defined as 8 point masses that are connected. The advantage of such a system is that you do not have to write code specific to rotation. Rotation is handled
+automatically by the result of the forces acting on the seperate masses, provided that the connections between them are well defined. Unfortunately, such a system usually results in some amount of spring like behavior to what
+should actually be solid objects. Special fix-up code is required to compensate for this, and a lot of such fix-up code can lead to a very messy code base. Due to this drawback, I will be building an engine that treats objects
+as rigid bodies.
+
+The third major difference how the engine goes about resolving collisions. One common approach is the iterative approach, where contacts are resolved one at a time, and the result applied immediately before moving on to the
+next one. The upside of this approach is that the process is quite simple to understand and is straightfoward. The drawback is that in reality, collisions aren't as simple, and collisions could be affected by other collisions.
+The solution to this is to take a Jacobian approach, where all the collisions are resolved and then a final cumulative result is applied to each object. The problem with this approach is that the integral math for it is quite
+complex, (the name comes from Jacobian Math which is a part of integral calculus) and sometimes, even after over a million computations, the result may be undefined and special code will be needed to deal with these cases.
+I will be proceeding foward with an iterative model for resolving collisions, which should provide sufficient accuracy for dealing with most common collisions. The system will fail when dealing with very high speed collisions.
+
+Finally, physics engines can be seperated by how they treat forces and impulses. Some engines use forces for everything, some only use impulses, and some use a combination of the two- namely, they use forces for resting forces
+and impulses for collision resolution. The engine that I will be building will use impulses for handling all force-like actions within the engine. For example, if a book is resting on a table, every frame the engine will provide
+an impulse that would counteract the force of gravity just enough to keep the book on the table. The only issues with such an approach is that if the frame rate drops, the book may seem to sink into the table, or with unstable
+frame rates, the book might start to vibrate. Under normal circumstances though, the system should work fine and allow the use of impulses for calulations over forces, which is considerably more simple.
+
+In the following weeks, I will be updating the blog with the progress I make on the engine, along with some code snippets, so stay tuned!
