@@ -1,0 +1,110 @@
+---
+title: "Polish Physics - Developer's Blog 1"
+layout: post
+date: 2017-05-31 12:30
+image:
+headerImage: false
+tag: 
+- PPP
+- blog
+category: blog
+author: SiddharthSuresh
+description: Polish Physics
+---
+
+
+## Polish Physics - A Developer's Blog 2
+
+
+I'm off to a pretty good start with the first week of my project.
+
+First off, I wrote my own Vector3 class, complete with all the operations that are normally used with vectors such as the dot product, cross product, normalize, etc.
+The vector forms the base  structure that holds may different values in the simulation such as a position, velocity, force and bunch of other information.
+
+{% highlight cpp %}
+/**Function that negates all the components of the vector. */
+void Invert();
+
+/**Function that returns the magnitude of the vector.
+* @return - A precision that is the magnitude of the vector*/
+Precision Magnitude() const;
+
+/**Function that returns the squared magnitude of the vector.
+* @return - A precision that is the squared magnitude of the vector*/
+Precision SquareMagnitude() const;
+
+/**Function that normalizes the vector. */
+void Normalize();
+
+/**Adds the vector by another vector, multiplied by a scale.
+* @param other - The vector to be added by.
+* @param scale - The scale by which the other vector should be multipled by.*/
+void AddScaledVector(const Vector3& other, Precision scale);
+
+/**Function that multiples each component of the vector by the corresponding
+components of the other vector.
+* @param other - The vector to be subtracted by.*/
+void ComponentProductAssignment(const Vector3& other);
+
+/**Function that returns a new vector that is the component-wise product of the 
+vector and the other vector.
+* @param other - The vector to be subtracted by.
+* @return - A copy of the vector after multiplication.*/
+Vector3 ComponentProduct(const Vector3& other) const;
+
+/**Function that returns the scalar product of the vector with the other vector.
+* @param other - The other vector.
+* @return - A precision that represents the dot product.*/
+Precision ScalarProduct(const Vector3& other) const;
+
+/**Function that returns the vector product of the vector with the other vector.
+* @param other - The other vector.
+* @return - A vector that represents the vector product.*/
+Vector3 VectorProduct(const Vector3& other) const;
+
+/**Function that sets the vector to be the result of the vector product with
+the other vector.
+* @param other - The vector to be subtracted by.*/
+void VectorProductAssignment(const Vector3& other);
+
+/**Function that zeroes out the vector. */
+void Clear();
+
+{% endhighlight %}
+
+I used the vector to make a Particle class. The particle is the simplest object that can be simulated. It represents a point mass that has no concept of scale or rotation.
+
+The particle has a concept of a force accumulator, that adds up all the forces applied to the particle during the course of a frame, and then at the end of a frame,
+adds an acceleration to the particle based on the total force. The accumulator is cleared out at the start of every frame, since as mentioned in my previous blogs, I will be treating
+all forces and impulses, and impulses are simply instantaneous forces.
+
+{% highlight cpp %}
+void Particle::Integrate(Precision deltaTime)
+{
+	//Don't update if infinite mass.
+	if (mInverseMass > 0.0f)
+	{
+		assert(deltaTime > 0.0f);
+
+		//Update linear position
+		mPosition.AddScaledVector(mVelocity, deltaTime);
+
+		//Calculate acceleration from force- TODO
+		Vector3 newAcceleration = mAcceleration;
+		newAcceleration.AddScaledVector(mAccumulatedForce, mInverseMass);
+
+		newAcceleration += mGravity;
+
+		mVelocity.AddScaledVector(newAcceleration, deltaTime);
+
+		mVelocity *= precision_pow(mDamping, deltaTime);
+
+		ClearAccumulator();
+	}
+}
+{% endhighlight %}
+
+Over the course of the next week, I will be using these particles to create a mass aggregate system, where a body can be created by combining multiple particles, and defining
+the connections between them using force generators.
+
+You can find the entirety of my code base on my [github](https://github.com/PranksterGD/PolishPhysics)
