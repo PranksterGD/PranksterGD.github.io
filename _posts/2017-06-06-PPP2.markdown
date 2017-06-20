@@ -1,5 +1,5 @@
 ---
-title: "Polish Physics - Developer's Blog 1"
+title: "Polish Physics - Developer's Blog 2"
 layout: post
 date: 2017-05-31 12:30
 image:

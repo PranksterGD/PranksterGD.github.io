@@ -1,0 +1,121 @@
+---
+title: "Polish Physics - Developer's Blog 5"
+layout: post
+date: 2017-06-19 12:30
+image:
+headerImage: false
+tag: 
+- PPP
+- blog
+category: blog
+author: SiddharthSuresh
+description: Polish Physics
+---
+
+
+## Polish Physics - A Developer's Blog 5
+
+
+It works!!
+
+The quaterion math that I spent the last week working on just needed a little tweaking and it now works smoothly.
+
+Having extended my particle system to now support rigid bodies that are capable of handling rotation, I spent this week setting up my first visualization of the work I've done.
+
+Using glut, I rendered a cube onto the screen, and I passed into it the rotation that the rigid body associated with the cube generated. Here's the result.
+
+### Rotation along the X axis.
+
+<iframe width="640" height="480" src="../assets/videos/X.mp4" frameborder="0" allowfullscreen></iframe>
+
+
+### Rotation along the Y axis.
+
+<iframe width="640" height="480" src="../assets/videos/Y.mp4" frameborder="0" allowfullscreen></iframe>
+
+
+### Rotation along the Z axis.
+
+<iframe width="640" height="480" src="../assets/videos/Z.mp4" frameborder="0" allowfullscreen></iframe>
+
+
+
+This was a huge step, as it signifies that the math libraries that I've been developing and the rigid body system are fully functional, and hence I can jump full speed into collision detection
+and resolution, which would provide the baseline for a complete physics simulation. In lieu of that, I also spent some time this week to start off with my collision detecction system.
+
+In fact, I was able to fully set up my broad phase collision detection, using Bounding Volume Hierarchies.
+
+A bounding volume hierarchy can be thought of as a binary tree, where a parent has a bounding volume that encompasses all of it's children. Therefore, while checking for collisions,
+if the bounding volumes of two parents are found to be not overlapping, then we can early exit out and not have to descend lower down the tree and compare all of their children too.
+
+{% highlight cpp %}
+template <class BoundingVolumeClass>
+	class BVHNode
+	{
+		private:
+
+		// Holds the child nodes of this node
+		BVHNode* mchildren[2];
+
+		//Holds a single bounding volume encompassing all the descendants of this node.
+		BoundingVolumeClass mVolume;
+
+		//Holds the rigid body at this node. Only leaf nodes can have a rigid body.
+		RigidBody* mBody;
+
+		//Holds the parent up the hierarchy.
+		BVHNode* mParent;
+
+		BVHNode(BVHNode *parent, const BoundingVolumeClass &volume, RigidBody* body = nullptr):
+			mParent(parent), mVolume(volume), mBody(body)
+		{
+			mchildren[0] = mchildren[1] = nullptr;
+		}
+
+		~BVHNode();
+
+	public:
+
+		/**Checks if this node is at the bottom of the hierarchy. */
+		bool IsLeaf() const;
+
+		/**Checks the potential contacts from this node downwards in the hierarchy.
+		* @param contacts- The array of contacts to write to.
+		* @param limit - The maximum number of contacts that can be written.
+		* @return - The number of contacts written.*/
+		std::uint32_t GetPotentialContacts(PotentialContact* contacts, std::uint32_t limit) const;
+
+		/**Checks the potential contacts between this node and another node.
+		* @param other - The node to check against.
+		* @param contacts- The array of contacts to write to,
+		* @param limit - The maximum number of contacts that can be written.
+		* @return - The number of contacts written.*/
+		std::uint32_t GetPotentialContactsWith(const BVHNode<BoundingVolumeClass>& other,
+			PotentialContact* contacts, std::uint32_t limit) const;
+
+		/**Checks if this node overlaps with another node.
+		* @param other - The node to check against.*/
+		bool Overlaps(const BVHNode<BoundingVolumeClass>& other) const;
+
+		/**Inserts the given rigid body, with the given bounding volume, into the hierarchy
+		* @param body - The new rigid body to add.
+		* @param volume - The bounding volume attached to the body.*/
+		void Insert(RigidBody& newBody, const BoundingVolumeClass& newVolume);
+
+		/**For non-leaf nodes, this method recalculates the bounding volume
+		* based on the bounding volumes of its children.*/
+		void RecalculateBoundingVolume(bool recurse = true);
+	};
+	
+{% endhighlight %}
+
+The BVH node is a templated class, and the type argument defines the type of bounding volume that is used, for example, spheres, boxes, cylinders etc.
+More complex types such as boxes and cylinders will result in fewer false positives i.e- the broad phase collision detection returning true while later on the narrow phase determines that the 
+objects are not actually colliding. But on the other hand, the actual collision detection itself for complex types is more expensive, and one of the major criteria for a broad phase collision detecction
+algorithm is speed. As such, for now, the only bounding volume type that I am using is spheres, but I may later go back and add other types to see how they perform.
+
+Next week, I will be taking my collision detection system to the next stage and begin implementing the narrow phase collision detection, which will ultimately determine if two objects
+are colliding or not.
+
+
+You can find the entirety of my code base on my [github](https://github.com/PranksterGD/PolishPhysics)

@@ -1,0 +1,214 @@
+---
+title: "Polish Physics - Developer's Blog 4"
+layout: post
+date: 2017-06-13 12:30
+image:
+headerImage: false
+tag: 
+- PPP
+- blog
+category: blog
+author: SiddharthSuresh
+description: Polish Physics
+---
+
+
+## Polish Physics - A Developer's Blog 4
+
+
+I've had a very insightful week. I finally got to uncover the mystery that is quaterinons, something that I've wondered about for a while at this point.
+
+In order to support full 3D rotations, I had to incoperate quaterinons into my engine, and the road to quaterinons began first with matrices. A revision of high school matrix math was in order,
+followed by implementing my own Matrix3 and Matrix4 classes.
+
+To start with, I created a ParticleForceGenerator interface, that be used to, in general, add a force to a particle. The actual implementation of the force can vary from generator to generator.
+
+{% highlight cpp %}
+	class ParticleForceGenerator
+	{
+	public:
+
+		/**Overload this implementation to calculate and update the force applied to the given particle.
+		* @param particle- The particle who's force is to be updated.
+		* @param deltaTime- The time since the last frame.*/
+		virtual void UpdateForce(class Particle& particle, Precision deltaTime) = 0;
+	};
+{% endhighlight %}
+
+Using this interface, I was able to create several force generators, such as springs, bungees, anchors etc. For example, a spring force generator looks like this.
+
+{% highlight cpp %}
+void ParticleSpringForceGenerator::UpdateForce(class Particle& particle, Precision deltaTime)
+{
+	UNREFERENCED_PARAMETER(deltaTime);
+	Vector3 force = particle.GetPosition();
+	force -= mOtherParticle->GetPosition();
+
+	Precision magnitude = force.Magnitude();
+	magnitude = precision_abs(magnitude - mRestLength);
+	magnitude *= mSpringConstant;
+
+	force.Normalize();
+	force *= -magnitude;
+
+	particle.AddForce(force);
+}
+{% endhighlight %}
+
+It uses the equation f = -k(l-l0) to calculate the force that should be applied to the particle.
+
+I then created a registry for these generators, so that a generator could "register" itself with a particle, allowing it to affect the particle across multiple frames.
+
+{% highlight cpp %}
+void ParticleForceRegistry::Add(Particle& particle, ParticleForceGenerator& generator)
+{
+	ParticleForceRegistration registration;
+	registration.mGenerator = &generator;
+	registration.mParticle = &particle;
+
+	mRegistrations.push_back(registration);
+}
+{% endhighlight %}
+
+The concept of force generators and springs help build one part of the mass aggreagate system. So what comes next is handling hard constraints - contact physics and collisions.
+
+A particle contact holds contact information between two particles. The contact is capable of resolving itself, based on the change in seperating velocity of the two particles and their relative masses.
+
+{% highlight cpp %}
+void ParticleContact::ResolveVelocity(Precision deltaTime)
+{
+	Precision seperatingVelocity = GetSeperatingVelocity();
+
+	//Early out if contact is either separating or stationary
+	if (seperatingVelocity < 0.0f)
+	{
+		//Calculate new separating velocity based on restitution.
+		Precision newSeperatingVelocity = -seperatingVelocity * mRestitution;
+
+		//Check the velocity buildup due to acceleration only.
+
+		Vector3 accCausedVelocity = mParticles[0]->GetAcceleration();
+
+		if (mParticles[1] != nullptr)
+		{
+			accCausedVelocity -= mParticles[1]->GetAcceleration();
+		}
+
+		Precision accCausedSepVelocity = accCausedVelocity.ScalarProduct(mContactNormal) * deltaTime;
+
+		//If we've got a closing velocity due to acceleration buildup, remove it from the new
+		//separating velocity - This is done to deal with resting contacts.
+
+		if (accCausedSepVelocity < 0.0f)
+		{
+			newSeperatingVelocity += mRestitution * accCausedSepVelocity;
+
+			if (newSeperatingVelocity < 0.0f)
+			{
+				newSeperatingVelocity = 0.0f;
+			}
+		}
+
+		Precision velocityChange = newSeperatingVelocity - seperatingVelocity;
+
+		//Apply change in velocity in proportion to inverse mass.
+		Precision totalInverseMass = mParticles[0]->GetInverseMass();
+
+		if (mParticles[1] != nullptr)
+		{
+			totalInverseMass += mParticles[1]->GetInverseMass();
+		}
+
+		if (totalInverseMass > 0.0f)
+		{
+			Precision impulseperInverseMass = velocityChange / totalInverseMass;
+
+			Vector3 impulse = mContactNormal * impulseperInverseMass;
+
+			mParticles[0]->SetVelocity(mParticles[0]->GetVelocity() + impulse * mParticles[0]->GetInverseMass());
+
+			if (mParticles[1] != nullptr)
+			{
+				mParticles[1]->SetVelocity(mParticles[1]->GetVelocity() + impulse* -mParticles[1]->GetInverseMass());
+			}
+		}
+	}
+} 
+{% endhighlight %}
+
+A particle contact generator, similar to the force generator, is used to create a contact between two particles.
+
+{% highlight cpp %}
+	class ParticleContactGenerator
+	{
+	public:
+
+		/**Fills the contact list with the generated contacts.
+		* @param contact - The list of contacts to be filled.
+		* @Param limit - The maximum number of contacts that can be filled.
+		* @return - An unsigned int that represents the number of contacts that were filled.*/
+		virtual std::uint32_t AddContact(class ParticleContact *contact, std::uint32_t limit) const = 0;
+	};
+	{% endhighlight %}
+	
+An example of a contact generator would be a rod, which would create a contact such that the relative positions of the two ends of the rod are always the same.
+That is, neither particle can move towards or away from the other particle, and since a rod is stiff, the resitution of the contact would be zero.
+
+A particle contact generator iterates through all the contacts in it's list and attempts to resolve them one by one, as was mentioned by the iterative system described in the inital blog post.
+
+The particle world combines all of the code together to create the overarching wrapper for the entire simulation. The particle world generates all contacts every frame using the list of
+contact generators that it has. Every frame it then integrates all the particles that it contains, which accumlates all the forces from the force generators, and then resolves all the contacts generated by the 
+contact generators.
+
+{% highlight cpp %}
+uint32_t ParticleWorld::GenerateContacts()
+{
+	uint32_t limit = mMaxContacts;
+	ParticleContact* nextContact = mContacts;
+
+	for (auto it = mContactGenerators.begin(); it != mContactGenerators.end(); ++it)
+	{
+		uint32_t contactsGenerated = (*it)->AddContact(nextContact, limit);
+		limit -= contactsGenerated;
+		nextContact += contactsGenerated;
+
+		if (limit <= 0)
+		{
+			break;
+		}
+	}
+
+	return mMaxContacts - limit;
+}
+
+void ParticleWorld::Integrate(Precision deltaTime)
+{
+	for (auto it = mParticles.begin(); it != mParticles.end(); ++it)
+	{
+		(*it)->Integrate(deltaTime);
+	}
+}
+
+void ParticleWorld::Update(Precision deltaTime)
+{
+	mRegistry.UpdateForces(deltaTime);
+
+	Integrate(deltaTime);
+
+	uint32_t generatedContacts = GenerateContacts();
+
+	if (generatedContacts > 0)
+	{
+		if (mShouldCalculateIterations)
+		{
+			mResolver.SetMaxIterations(generatedContacts * 2);
+		}
+
+		mResolver.ResolveContacts(mContacts, generatedContacts, deltaTime);
+	}
+}
+{% endhighlight %}
+
+over the course of the next week, I will be using this framework that I've build for particles and making it work with full rigid bodies that support rotations through quaterinons.
+
+You can find the entirety of my code base on my [github](https://github.com/PranksterGD/PolishPhysics)
