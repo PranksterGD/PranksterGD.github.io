@@ -1,0 +1,91 @@
+---
+title: "Polish Physics - Developer's Blog 6"
+layout: post
+date: 2017-07-04 12:30
+image:
+headerImage: false
+tag: 
+- PPP
+- blog
+category: blog
+author: SiddharthSuresh
+description: Polish Physics
+---
+
+
+## Polish Physics - A Developer's Blog 6
+
+I spent the last two weeks working on the narrow phase collision detection. My broad phase collision detection system picks out bodies that could potentially be colliding, and then the narrow phase collision
+detection checks if the bodies are actually colliding, and if they are, it finds the point of collision.
+
+The IntersectionTests class is used to simply check if two objects are intersecting, and can be used to early out in the CollisionDetector class which tries to find the points of collsion.
+
+{% highlight cpp %}
+class IntersectionTests
+	{
+	public:
+
+		static bool SphereAndHalfSpace(const CollisionSphere &sphere, const CollisionPlane &plane);
+
+		static bool SphereAndSphere(const CollisionSphere &one, const CollisionSphere &two);
+
+		static bool BoxAndBox(const CollisionBox &one, const CollisionBox &two);
+
+		static bool BoxAndHalfSpace(const CollisionBox &box, const CollisionPlane &plane);
+	};
+{% endhighlight %}
+
+
+The CollisionDetector detector class can check for collision between different types of objects, and it also takes in a collision data array that it writes into all the points of collision that it finds.
+
+
+{% highlight cpp %}
+	class CollisionDetector
+	{
+	public:
+
+		static std::uint32_t SphereAndHalfSpace(const CollisionSphere &sphere, const CollisionPlane &plane,
+			CollisionData *data);
+
+		static std::uint32_t SphereAndTruePlane(const CollisionSphere &sphere, const CollisionPlane &plane,
+			CollisionData *data);
+
+		static std::uint32_t SphereAndSphere(const CollisionSphere &one, const CollisionSphere &two,
+			CollisionData *data);
+
+		static std::uint32_t BoxAndHalfSpace(const CollisionBox &box, const CollisionPlane &plane,
+			CollisionData *data);
+
+		static std::uint32_t BoxAndBox(const CollisionBox &one, const CollisionBox &two, CollisionData *data);
+
+		static std::uint32_t BoxAndPoint(const CollisionBox &box, const Vector3 &point, CollisionData *data);
+
+		static std::uint32_t BoxAndSphere(const CollisionBox &box, const CollisionSphere &sphere,
+			CollisionData *data);
+
+	};
+	
+{% endhighlight %}
+
+The results of my collision detection system look something like this. White indiciates no collsion, yellow detects a broad phase collision and red a narrow phase collsion.
+
+Sphere And Sphere
+<iframe width="640" height="480" src="../assets/videos/SphereAndSphere.mp4" frameborder="0" allowfullscreen></iframe>
+
+Sphere And Box
+<iframe width="640" height="480" src="../assets/videos/SphereAndBox.mp4" frameborder="0" allowfullscreen></iframe>
+
+Box And Box
+<iframe width="640" height="480" src="../assets/videos/BoxAndBox.mp4" frameborder="0" allowfullscreen></iframe>
+
+Sphere And Plane
+<iframe width="640" height="480" src="../assets/videos/SphereAndPlane.mp4" frameborder="0" allowfullscreen></iframe>
+
+Box And Plane
+<iframe width="640" height="480" src="../assets/videos/BoxAndPlane.mp4" frameborder="0" allowfullscreen></iframe>
+
+
+So now that I am able to detect collisions and the point of collision, the next step will be to resolve the collisions and implement contact physics.
+
+
+You can find the entirety of my code base on my [github](https://github.com/PranksterGD/PolishPhysics)
